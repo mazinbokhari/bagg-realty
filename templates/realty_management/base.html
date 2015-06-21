@@ -1,0 +1,70 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Bagg Realty {% block title %}{% endblock title %}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+        <!-- js included up here for calendar -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+        {% block head %}{% endblock head %}
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">Bagg Realty</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li><a href="/all/Property">Properties</a></li>
+                <li><a href="/all/Vendor">Vendors</a></li>
+                <li><a href="/all/MainTenant">Tenants</a></li>
+                <li><a href="/map">Map</a></li>
+              </ul>
+              <div class="nav navbar-nav navbar-right">
+                <form class="navbar-form navbar-left" role="search" action="/search" method="post">
+                  {% csrf_token %}
+                  <select class="form-control" name="model">
+                    <option value="MainTenant">Tenants</option>
+                    <option value="Property">Properties</option>
+                    <option value="Vendor">Vendors</option>
+                  </select>
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" name="query">
+                  </div>
+                  <button type="submit" class="btn btn-default">Search</button>
+                </form>
+              </div>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="container">
+            <div class="row">
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
+
+        {% block js %}{% endblock js %}
+    </body>
+</html>

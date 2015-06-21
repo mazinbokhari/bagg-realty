@@ -1,0 +1,18 @@
+{% extends 'realty_management/base.html' %}
+{% block title %} Map {% endblock title %}
+{% block content %}
+
+<iframe frameborder="0" style="height:600px;width:100%;border:0"
+src="{{ url }}">
+</iframe>
+
+<div class="panel panel-default">
+	<div class="panel-heading">Property Path Order</div>
+	<ul class="list-group">
+		{% for loc in path %}
+		<a href="/one/Property/{{ loc }}" class="list-group-item">{{ loc }}</a>
+		{% endfor %}
+	</ul>
+</div>
+
+{% endblock %}

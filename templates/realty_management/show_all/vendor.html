@@ -1,0 +1,55 @@
+{% extends 'realty_management/show_all/base.html' %}
+{% block title %} All {{ model }} {% endblock title %}
+{% block content %}
+
+<style>
+.hover-btn {
+  margin-top: -5px;
+  margin-bottom: -5px;
+  display: none;
+}
+
+td:hover > .hover-btn {
+  display: inline;
+}
+
+table {
+  table-layout: fixed;
+}
+</style>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {{ model }}
+    {% if not add_gone %}
+      <a class="btn btn-sm btn-success pull-right" href="/add/{{ model }}Form" style="margin-top: -5px;">Add New</a>
+    {% endif %}
+  </div>
+  <table class="table table-hover table-bordered">
+    <tr>
+      <th>Company Name</th>
+      <th>Contact Name</th>
+      <th>Phone #</th>
+      <th>Address</th>
+    </tr>
+    <tbody>
+    {% for object in objects %}
+    <tr>
+      <td>
+        {{ object.company_name }}
+        <div class="hover-btn pull-right">
+          <a href="/edit/VendorForm/{{ object.company_name }}" class="btn btn-sm btn-default">
+            Edit
+          </a>
+        </div>
+      </td>
+      <td>{{ object.contact_name }}</td>
+      <td>{{ object.phone }}</td>
+      <td>{{ object.address }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,37 @@
+{% extends 'realty_management/base.html' %}
+{% load bootstrap_tags %}
+
+{% block title %} Add Info {% endblock title %}
+{% block head %} {{ form.media }} {% endblock head %}
+
+{% block content %}
+{% if success %}
+<div class="alert alert-success" role="alert">
+    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+    Success!
+</div>
+{% elif error %}
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+    {{ error }}
+</div>
+{% endif %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form | as_bootstrap }}
+        <input type="submit" value="Submit" class="btn btn-default" />
+    </div>
+</form>
+
+{% if edit %}
+<form action="/delete" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="form_name" value="{{ form_name }}" />
+    <input type="hidden" name="model" value="{{ model }}" />
+    <input type="hidden" name="key" value="{{ key }}" />
+    <input type="submit" value="Delete" class="btn btn-danger pull-right" />
+</form>
+{% endif %}
+{% endblock content %}

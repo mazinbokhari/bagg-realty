@@ -1,0 +1,71 @@
+{% extends 'realty_management/show_all/base.html' %}
+{% block title %} All {{ model }} {% endblock title %}
+{% block content %}
+
+<style>
+tr {
+  cursor: pointer;
+}
+
+.hover-btn {
+  margin-top: -5px;
+  margin-bottom: -5px;
+  display: none;
+}
+
+td:hover > .hover-btn {
+  display: inline;
+}
+
+table {
+  table-layout: fixed;
+}
+</style>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {{ model }}
+    {% if not add_gone %}
+      <a class="btn btn-sm btn-success pull-right" href="/add/{{ model }}Form" style="margin-top: -5px;">Add New</a>
+    {% endif %}
+  </div>
+  <table class="table table-hover table-bordered ">
+    <tr>
+      <th>Address</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Zip</th>
+      <th># Units</th>
+      <th>Owner</th>
+    </tr>
+    <tbody>
+    {% for object in objects %}
+    <tr class="clickable-row" data-href="/one/{{ model }}/{{ object }}">
+      <td>
+        {{ object.address }}
+        <div class="hover-btn pull-right">
+          <a href="/edit/PropertyForm/{{ object.address }}" class="btn btn-sm btn-default">
+            Edit
+          </a>
+        </div>
+      </td>
+      <td>{{ object.city }}</td>
+      <td>{{ object.state }}</td>
+      <td>{{ object.zip_code }}</td>
+      <td>{{ object.num_units }}</td>
+      <td>{{ object.owner }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.document.location = $(this).data("href");
+    });
+});
+</script>
+
+{% endblock content %}

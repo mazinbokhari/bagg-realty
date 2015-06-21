@@ -1,0 +1,71 @@
+{% extends 'realty_management/show_all/base.html' %}
+{% block title %} Search Results for {{ model }} {% endblock title %}
+{% block content %}
+
+<style>
+.hiddenRow {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+table {
+  table-layout: fixed;
+}
+</style>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Search Results
+  </div>
+  <table class="table table-hover">
+    <tr>
+      <th>Name</th>
+      <th>SSN</th>
+      <th>Phone #</th>
+    </tr>
+    <tbody>
+    {% for tenant in results %}
+    <tr data-toggle="collapse" data-target="#{{ tenant.ssn }}{{ title }}" class="accordion-toggle">
+      <td>{{ tenant.name }}</td>
+      <td>{{ tenant.ssn }}</td>
+      <td>{{ tenant.phone }}</td>
+    </tr>
+    <tr>
+      <td colspan="3" class="hiddenRow">
+        <div class="accordian-body collapse" id="{{ tenant.ssn }}{{ title }}">
+          <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+            <div class="col-md-12">
+              <div style="height: 150px; overflow-y: auto;">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Property</th>
+                    <th>Unit #</th>
+                    <th>Lease Start</th>
+                    <th>Lease End</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for contract in tenant.contracts %}
+                    <tr>
+                      <td>{{ contract.unit_number.property.address }}</td>
+                      <td>{{ contract.unit_number.number }}</td>
+                      <td>{{ contract.lease_start | date:'M d, Y' }}</td>
+                      <td>{{ contract.lease_end | date:'M d, Y' }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock content %}
+

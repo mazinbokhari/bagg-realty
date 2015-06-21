@@ -1,0 +1,229 @@
+{% extends 'realty_management/base.html' %}
+{% load bootstrap_tags %}
+
+{% block title %} {% endblock title %}
+
+{% block content %}
+
+<style>
+.hiddenRow {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.hover-btn {
+  margin-top: -5px;
+  margin-bottom: -5px;
+  display: none;
+}
+
+td:hover > .hover-btn {
+  display: inline;
+}
+
+table {
+  table-layout: fixed;
+}
+
+.label-as-badge {
+  border-radius: 1em;
+}
+</style>
+
+<div role="tabpanel">
+
+<ul class="nav nav-tabs nav-justified" role="tablist">
+  <li role="presentation" class="active">
+      <a href="#units" aria-controls="units" role="tab" data-toggle="tab">
+          Units
+          <span class="label {% if property.vacancy_rate < 0.85 %} label-danger {% else %} label-success {% endif %} label-as-badge">
+            {{ property.occupied_units }} / {{ property.owned_units }} occupied
+          </span>
+      </a>
+  </li>
+
+  <li role="presentation">
+      <a href="#vendors" aria-controls="vendors" role="tab" data-toggle="tab">
+          Vendors
+      </a>
+  </li>
+</ul>
+
+<br />
+
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="units">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ property.address }}
+        <a href="/add/UnitForm/{{ property.address }}" class="btn btn-sm btn-success pull-right" style="margin-top: -5px;">Add Unit to This Property</a>
+      </div>
+      <div class="panel-body">Owned by {{ property.owner }}. Contains {{ property.num_units }} units.</div>
+      <table class="table table-hover table-bordered" style="border-collapse:collapse;">
+        <tr>
+          <th>Unit #</th>
+          <th>Rent</th>
+          <th>Tenant</th>
+          <th>Lease Start</th>
+          <th>Lease End</th>
+        </tr>
+        <tbody>
+        {% for unit in units %}
+        <tr data-toggle="collapse" data-target="#{{ unit.number }}" class="accordion-toggle">
+          <td>
+            {{ unit.number }}
+            <div class="hover-btn pull-right">
+              <a href="/edit/UnitForm/{{ unit.number }}/{{ property.address }}" class="btn btn-sm btn-default">
+                Edit
+              </a>
+            </div>
+          </td>
+          <td>{{ unit.rent }}</td>
+          <td data-toggle="tooltip" data-placement="top" title="
+              SSN: {{ unit.tenant.ssn }} <br />
+              Phone #: {{ unit.tenant.phone }}">
+            {{ unit.tenant.name }}
+            <div class="hover-btn pull-right">
+              <a href="/edit/MainTenantForm/{{ unit.tenant.ssn }}" class="btn btn-sm btn-default">
+                Edit
+              </a>
+            </div>
+          </td>
+          <td>
+            {{ unit.lease_start | date:'M d, Y' }}
+            <div class="hover-btn pull-right">
+              <a href="/edit/LivesInForm/{{ unit.tenant.ssn }}/{{ unit.number }}/{{ property.address }}" class="btn btn-sm btn-default">
+                Edit
+              </a>
+            </div>
+          </td>
+          <td>{{ unit.lease_end | date:'M d, Y' }}</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="hiddenRow">
+            <div class="accordian-body collapse" id="{{ unit.number }}">
+              <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                <div class="col-md-4">
+                  <br />
+                  <ul>
+                    <li>Beds: {{ unit.beds }}</li>
+                    <li>Baths: {{ unit.baths }}</li>
+                    <li>Square ft: {{ unit.sq_ft }}</li>
+                  </ul>
+                  <a style="margin-left: 15px;" class="btn btn-sm btn-success" href="/add/LivesInForm/{{ unit.number }}/{{ property.address }}">Add Contract to This Unit</a>
+                </div>
+                <div class="col-md-8">
+                  <div style="height: 150px; overflow-y: auto;">
+                  <table class="table table-bordered">
+                    <tr>
+                      <th>Past Tenants</th>
+                      <th>Lease Start</th>
+                      <th>Lease End</th>
+                    </tr>
+                    <tbody>
+                      {% for contract in unit.tenants %}
+                        <tr>
+                          <td data-toggle="tooltip" data-placement="top" title="
+                              SSN: {{ contract.tenant.ssn }} <br />
+                              Phone #: {{ contract.tenant.phone }}">
+                              {{ contract.tenant.name }}
+                          </td>
+                          <td>{{ contract.lease_start | date:'M d, Y' }}</td>
+                          <td>{{ contract.lease_end | date:'M d, Y' }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div role="tabpanel" class="tab-pane" id="vendors">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ property.address }}
+        <a href="/add/SupportsForm/{{ property.address }}" class="btn btn-sm btn-success pull-right" style="margin-top: -5px;">Link Vendor to This Property</a>
+      </div>
+      <div class="panel-body">Owned by {{ property.owner }}. Contains {{ property.num_units }} units.</div>
+      <table class="table table-hover table-bordered" style="border-collapse:collapse;">
+        <tr>
+          <th>Company Name</th>
+          <th>Service</th>
+          <th>Rate</th>
+        </tr>
+        <tbody>
+        {% for vendor in vendors %}
+        <tr data-toggle="collapse" data-target="#{{ vendor.name | add:vendor.service }}" class="accordion-toggle">
+          <td>
+            {{ vendor.name}}
+            <div class="hover-btn pull-right">
+              <a href="/edit/VendorForm/{{ vendor.name }}" class="btn btn-sm btn-default">
+                Edit
+              </a>
+            </div>
+          </td>
+          <td>{{ vendor.service }}</td>
+          <td>
+            {{ vendor.rate }}
+            <div class="hover-btn pull-right">
+                <a href="/edit/SupportsForm/{{ vendor.name }}/{{ property.address }}/{{ vendor.service }}" class="btn btn-sm btn-default">
+                Edit
+              </a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" class="hiddenRow">
+            <div class="accordian-body collapse" id="{{ vendor.name | add:vendor.service }}">
+              <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                <div class="col-md-6">
+                  <br />
+                  <ul>
+                    <li>Phone: {{ vendor.phone }}</li>
+                    <li>Contact: {{ vendor.contact }}</li>
+                    <li>Address: {{ vendor.address }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$('#units a').click(function (e) {
+  $(this).tab('show')
+});
+
+$('#vendors a').click(function (e) {
+  $(this).tab('show')
+});
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip({ html: true, container: 'body', trigger: 'click' })
+});
+
+$('body').on('click', function (e) {
+    $('[data-toggle="tooltip"]').each(function () {
+        //the 'is' for buttons that trigger popups
+        //the 'has' for icons within a button that triggers a popup
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.tooltip').has(e.target).length === 0) {
+            $(this).tooltip('hide');
+        }
+    });
+});
+</script>
+{% endblock content %}
